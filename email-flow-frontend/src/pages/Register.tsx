@@ -3,15 +3,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { publicRequest } from "../../helpers/axios";
-import userSchema from "../../validation/userValidation";
+import { publicRequest } from "../helpers/axios";
+import userSchema from "../validation/userValidation";
 
 function Register() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<{ name: string; username: string; email: string; password: string }>({
     resolver: zodResolver(userSchema),
     defaultValues: {
       name: "",
@@ -23,12 +23,13 @@ function Register() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (data) => {
+  const submitHandler = async (data: { name: string; username: string; email: string; password: string }) => {
     setIsLoading(true);
     try {
        await publicRequest.post("/user/register", data);
       toast.success("Registration successful");
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err:any) {
       toast.error( err?.response?.data?.code?.message || "Registration failed");
     } finally {
       setIsLoading(false);

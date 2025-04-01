@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { publicRequest } from "../../helpers/axios";
+import { publicRequest } from "../helpers/axios";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import userSchema from "../../validation/userValidation";
+import userSchema from "../validation/userValidation";
 import{ useNavigate} from 'react-router-dom'
+import {motion} from 'framer-motion'
+import { UserLogin } from "../types";
 function Login() {
   const {
     register,
@@ -22,7 +25,7 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
 
-  const submitHandler = async (data) => {
+  const submitHandler = async (data:UserLogin) => {
     try {
       setLoading(true);
       const res = await publicRequest.post("/user/login", data);
@@ -30,7 +33,7 @@ function Login() {
       localStorage.setItem('token', res.data.data.token)
       toast.success("Login successful!");
       navigate('/')
-    } catch (err) {
+    } catch (err: any) {
       toast.error(
         err?.response?.data?.code?.message || "Login failed. Please try again."
       );
