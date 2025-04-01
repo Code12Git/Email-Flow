@@ -1,9 +1,11 @@
 
 import { useEffect } from 'react'
 import './App.css'
-import Routing from './routes/Routing'
-import { Toaster } from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import Routing from './routes/Routing';
+
+
 function App() {
   const navigate = useNavigate()
   useEffect(() => {
@@ -17,10 +19,14 @@ function App() {
     }
   }, [navigate]); 
 
+ 
+
+
   return (
     <div> 
       <Toaster />
       <Routing />
+
     </div>
   )
 }
