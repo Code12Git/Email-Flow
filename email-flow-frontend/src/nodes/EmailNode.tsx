@@ -1,15 +1,24 @@
-import { Handle, Position, type NodeProps } from '@xyflow/react';
-import type { EmailNodeData } from '../types';
+import { Handle, Position, NodeProps } from 'reactflow';
 
-export function EmailNode({ data }: NodeProps<EmailNodeData>) {
+type EmailNodeData = {
+  subject?: string;
+  body?: string;
+  from?: string;
+};
+
+export default function EmailNode({ data }: NodeProps<EmailNodeData>) {
+  
   return (
-    <div className="email-node">
-      <div className="node-header">Email</div>
-      <div className="node-content">
-        <p>To: {data.recipient}</p>
-        <p>Subject: {data.subject}</p>
-        <p>Content:{data.content}</p>
+    <div className="p-4 bg-white border border-blue-200 rounded-lg shadow-sm w-48">
+      <div className="flex items-center mb-2">
+        <div className="mr-2">✉️</div>
+        <div className="font-medium">Cold Email</div>
       </div>
+      {data.subject && (
+        <div className="text-xs truncate" title={data.subject}>
+          Subject: {data.subject}
+        </div>
+      )}
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Bottom} />
     </div>

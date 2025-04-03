@@ -15,7 +15,7 @@ agenda.define('send email', async (job) => {
   
   try {
     await transporter.sendMail({
-      from: `"EmailFlow" <${fromEnv('EMAIL_USER')}>`,
+      from: `<${fromEnv('EMAIL_USER')}>`,
       to,
       subject,
       html

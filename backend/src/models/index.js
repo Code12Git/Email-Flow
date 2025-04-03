@@ -1,3 +1,3 @@
 const user = require('./user')
-
-module.exports = { userModel: user }
+const email = require('./email')
+module.exports = { userModel: user,emailModel:email }

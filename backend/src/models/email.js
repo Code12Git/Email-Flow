@@ -6,18 +6,18 @@ const emailSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  name: {
-    type: String,
-    required: true
+  body:{
+    type:String,
+    required:true
   },
-  nodes: {
-    type: Array,
-    required: true
+  subject:{
+    type:String,
+    required:true
   },
-  edges: {
-    type: Array,
-    required: true
-  },
+  address:{
+    type:String,
+    required:true
+  }
 },{timestamps:true});
 
 module.exports = mongoose.model('EmailFlow', emailSchema);

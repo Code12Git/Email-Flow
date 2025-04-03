@@ -4,6 +4,7 @@ import './App.css'
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Routing from './routes/Routing';
+import { ReactFlowProvider } from '@xyflow/react';
 
 
 function App() {
@@ -25,8 +26,9 @@ function App() {
   return (
     <div> 
       <Toaster />
+      <ReactFlowProvider>
       <Routing />
-
+      </ReactFlowProvider>
     </div>
   )
 }
