@@ -21,15 +21,18 @@ import {
 } from '@mui/material';
 import { Close, Search, Add } from '@mui/icons-material';
 import type { ListItems } from '../../types';
+import { useDispatch } from 'react-redux';
+import { addNode } from '../../redux/action/nodes';
 
 
 
-const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose: () => void }) => {
+const LeadsFromListModal = ({ open, onClose, onSubmit }: { open: boolean; onClose: () => void }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLists, setSelectedLists] = useState<string[]>([]);
   const [selectedListsDetails, setSelectedListsDetails] = useState<ListItems[]>([]);
   const [newListName, setNewListName] = useState('');
   const [showNewListField, setShowNewListField] = useState(false);
+  const dispatch = useDispatch()
   // Mock data - replace with your actual lists data
   const lists: ListItems[] = [
     { id: '1', name: 'John Doe', email: 'john.doe@example.com', company: 'ABC Corp', status: 'Premium Customer' },
@@ -43,6 +46,7 @@ const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose
     { id: '9', name: 'David Kim', email: 'david.kim@example.com', company: 'Finance Edge', status: 'Premium Customer' },
     { id: '10', name: 'Olivia Martinez', email: 'olivia.martinez@example.com', company: 'EdTech Solutions', status: 'Trial User' },
   ];
+
 
   const filteredLists = lists.filter(list =>
     list.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -95,7 +99,9 @@ const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose
 
   const handleSubmit = () => {
     if (selectedListsDetails.length > 0) {
+      console.log(selectedListsDetails)
       onSubmit(selectedListsDetails);
+      dispatch(addNode(selectedListsDetails))
     }
     onClose();
   };
@@ -212,7 +218,7 @@ const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose
               key={list.id}
               disablePadding
               secondaryAction={
-                <Chip label={`${list.count} leads`} size="small" />
+                <Chip label={`${list?.company} leads`} size="small" />
               }
             >
               <ListItemButton

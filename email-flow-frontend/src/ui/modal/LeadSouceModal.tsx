@@ -20,7 +20,7 @@ const style = {
   outline: "none",
 };
 
-export default function LeadSourceModal({onSubmit}:{onSubmit:()=>void}) {
+export default function LeadSourceModal() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -28,7 +28,7 @@ export default function LeadSourceModal({onSubmit}:{onSubmit:()=>void}) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const handleLeads = () => {
-    setIsModalOpen(true); // This will open the modal
+    setIsModalOpen(true);  
   };
   const handleListClose = () => {
      setIsModalOpen(false)
@@ -76,7 +76,6 @@ export default function LeadSourceModal({onSubmit}:{onSubmit:()=>void}) {
         </Box>
       </Modal>
       <LeadsFromListModal 
-        onSubmit={onSubmit}
         open={isModalOpen} 
         onClose={handleListClose} 
       />

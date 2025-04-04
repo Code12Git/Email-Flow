@@ -1,14 +1,12 @@
-
-import { useEffect } from 'react'
-import './App.css'
-import { useNavigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import Routing from './routes/Routing';
-import { ReactFlowProvider } from '@xyflow/react';
-
-
+import { useEffect } from "react";
+import "./App.css";
+import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import Routing from "./routes/Routing";
+ 
 function App() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   useEffect(() => {
     const user = localStorage.getItem("user");
     const token = localStorage.getItem("token");
@@ -18,19 +16,14 @@ function App() {
     } else {
       navigate("/login");
     }
-  }, [navigate]); 
-
- 
-
+  }, [navigate]);
 
   return (
-    <div> 
-      <Toaster />
-      <ReactFlowProvider>
+    <>
+       <Toaster />
       <Routing />
-      </ReactFlowProvider>
-    </div>
-  )
+      </>
+   );
 }
 
-export default App
+export default App;

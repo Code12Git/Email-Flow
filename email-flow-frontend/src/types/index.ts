@@ -51,6 +51,16 @@ export interface ListItems {
   status:string
 }
 
+export interface EmailFormData {
+  recipient: string;
+  subject: string;
+  body: string;
+}
+
+export interface NodeCreation {
+  originalNodeId: string;
+  newNodeData: any;
+}
 
 //   export type AppNode = {
 //     id: string;

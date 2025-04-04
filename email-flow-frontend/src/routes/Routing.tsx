@@ -6,11 +6,9 @@ import Register from "../pages/Register";
 const Routing = () => {
   return (
     <Routes>
-      <Route>
       <Route path="/" element={<Dashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register/>} />
-      </Route>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 };
