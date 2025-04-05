@@ -7,7 +7,7 @@ export const addNode = (nodeData,type) => (dispatch) => {
     payload: {
       id: `node-${Date.now()}`,
       type: `${type}`, 
-      position: { x: Math.random() * 500, y: Math.random() * 500 }, 
+      position: {x:100,y:-100}, 
       data: nodeData 
     }
   });

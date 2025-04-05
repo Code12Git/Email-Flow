@@ -1,13 +1,19 @@
-import { NodeCreation } from "../../types";
+import LeadNode from "../../nodes/LeadNode";
 import {
   ADD_NODE,
   UPDATE_NODE,
   NODE_CREATION_REQUEST,
   DELETE_NODE,
 } from "../actionTypes/actionTypes";
+import { NodePayload } from "../../types";
 
 const initialState = {
   nodesData: [
+    {
+      id:"12",
+      position:{x:100,y:-200},
+      type: "leadNode",
+    },
     {
       id: "1",
       data: { label: "Sequence Start Point" },
@@ -22,7 +28,7 @@ const initialState = {
         fontWeight: "bold",
         width: "15%",
       },
-      type: "input",
+      type: LeadNode,
     },
     {
       id: "2",
@@ -68,13 +74,7 @@ const initialState = {
   ],
 };
 
-interface NodePayload {
-  id: string;
-  position: { x: number; y: number };
-  type: string;
-  data: unknown;
-  // Add other node properties as needed
-}
+
 
 console.log(initialState.nodesData);
 
@@ -84,6 +84,7 @@ const nodesReducer = (
 ) => {
   switch (type) {
     case ADD_NODE:
+      console.log("payload", payload);
       return {
         ...state,
         nodesData: [
@@ -115,24 +116,18 @@ const nodesReducer = (
         newNodeData
       );
 
-      const { type, label, time } = newNodeData;
-      // console.log("Type", type, "Time", time.hours, "label", label);
-      // console.log(originalNodeId, type, label); a
-      // Find the "+" node
+      const {  time } = newNodeData;
       const plusNode = state.nodesData.find((node) => node.id === "2");
       if (!plusNode) return state;
 
-      // Determine the node type (emailNode or waitTimeNode)
       const nodeType =
         newNodeData.type === "delayNode" ? "waitTimeNode" : "emailNode";
 
-      // Define labels for different node types
       const nodeLabels = {
         emailNode: `📧 Email ${newNodeData.emailData?.subject || "New Email"} to ${newNodeData.emailData?.recipient || "Recipient"}`,
         waitTimeNode: `⏳ Wait Time is ${time?.hours} Hours ${time?.minutes} Minutes`,
       };
 
-      // Create new node
       const newNode = {
         id: `node-${Date.now()}`,
         type: nodeType,
@@ -164,23 +159,20 @@ const nodesReducer = (
         },
       };
 
-      // Move "+" node downward
       const updatedPlusNode = {
         ...plusNode,
         position: { x: plusNode.position.x, y: plusNode.position.y + 100 },
       };
 
-      // Update existing edges that pointed to "+"
       const previousEdges = state.edgesData.map((edge) =>
         edge.target === plusNode.id ? { ...edge, target: newNode.id } : edge
       );
 
-      // Create a new edge from the new node to the "+"
       const newEdge = {
         id: `edge-${newNode.id}-plus`,
         source: newNode.id,
         target: plusNode.id,
-        type: "smoothstep",
+        type: "customEdge",
         animated: true,
         style: { stroke: "#3B82F6", strokeWidth: 2 },
       };

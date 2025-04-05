@@ -26,7 +26,7 @@ import { addNode } from '../../redux/action/nodes';
 
 
 
-const LeadsFromListModal = ({ open, onClose, onSubmit }: { open: boolean; onClose: () => void }) => {
+const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose: () => void }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLists, setSelectedLists] = useState<string[]>([]);
   const [selectedListsDetails, setSelectedListsDetails] = useState<ListItems[]>([]);
@@ -97,11 +97,13 @@ const LeadsFromListModal = ({ open, onClose, onSubmit }: { open: boolean; onClos
     }
   };
 
+  console.log(selectedListsDetails)
+
   const handleSubmit = () => {
     if (selectedListsDetails.length > 0) {
       console.log(selectedListsDetails)
-      onSubmit(selectedListsDetails);
-      dispatch(addNode(selectedListsDetails))
+      // onSubmit(selectedListsDetails);
+      dispatch(addNode(selectedListsDetails,'leadNode'))
     }
     onClose();
   };

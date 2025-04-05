@@ -61,6 +61,30 @@ export interface NodeCreation {
   originalNodeId: string;
   newNodeData: any;
 }
+export interface LeadNodeData {
+  label?: string;
+  description?: string;
+}
+export interface NodePayload {
+  id: string;
+  position: { x: number; y: number };
+  type: string;
+  data: unknown;
+  originalNodeId:string;
+  newNodeData: {
+    type: string;
+    label: string;
+    time?: {
+      hours: number;
+      minutes: number;
+    };
+    emailData?: {
+      subject: string;
+      recipient: string;
+    };
+  };
+  // Add other node properties as needed
+}
 
 //   export type AppNode = {
 //     id: string;

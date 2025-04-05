@@ -3,6 +3,7 @@ import "./App.css";
 import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Routing from "./routes/Routing";
+import Navbar from "./base/Navbar";
  
 function App() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ function App() {
   return (
     <>
        <Toaster />
+       <Navbar />
       <Routing />
       </>
    );

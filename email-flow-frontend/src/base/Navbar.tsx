@@ -1,14 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { clearAuth } from "../../utils/auth";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-    const logoutHandler = () => {
-        clearAuth()
-    }
+  useEffect(() => {
+    const handleUserChange = () => {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser ? JSON.parse(storedUser) : null);
+    };
+  
+    handleUserChange(); // Call once on mount
+  
+    window.addEventListener("userChanged", handleUserChange);
+  
+    return () => {
+      window.removeEventListener("userChanged", handleUserChange);
+    };
+  }, []);
+  
+  const logoutHandler = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("persist:root");
+  
+    window.dispatchEvent(new Event("userChanged"));
+  
+    setUser(null);
+    navigate("/login");
+  };
+  
 
   return (
     <motion.nav
@@ -27,34 +51,28 @@ const Navbar = () => {
           >
             EmailFlow
           </Link>
-          
+
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link 
-              to="/" 
-              className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium"
-            >
+            <Link to="/" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
               Home
             </Link>
-            <Link 
-              to="/about" 
-              className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium"
-            >
+            <Link to="/about" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
               About
             </Link>
-            <Link 
-              to="/dashboard" 
-              className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Dashboard
-            </Link>
-            <Link 
-              to="/login" 
-              onClick={logoutHandler}
-              className="bg-white text-indigo-600 hover:bg-gray-100 px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors"
-            >
-              Logout
-            </Link>
+            {user && (
+              <>
+                <Link to="/dashboard" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                  Dashboard
+                </Link>
+                <button
+                  onClick={logoutHandler}
+                  className="bg-white text-indigo-600 hover:bg-gray-100 px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -63,13 +81,7 @@ const Navbar = () => {
             className="md:hidden text-white hover:text-gray-200 focus:outline-none p-2 rounded-md hover:bg-white/10 transition-colors"
             aria-label="Toggle menu"
           >
-            <svg 
-              className="w-6 h-6" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -91,34 +103,28 @@ const Navbar = () => {
             className="md:hidden bg-gradient-to-b from-purple-700 to-indigo-800 shadow-xl overflow-hidden"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <Link 
-                to="/" 
-                className="block text-white hover:bg-white/10 px-3 py-2 rounded-md text-base font-medium transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/" className="block text-white hover:bg-white/10 px-3 py-2 rounded-md text-base font-medium transition-colors" onClick={() => setIsOpen(false)}>
                 Home
               </Link>
-              <Link 
-                to="/about" 
-                className="block text-white hover:bg-white/10 px-3 py-2 rounded-md text-base font-medium transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to="/about" className="block text-white hover:bg-white/10 px-3 py-2 rounded-md text-base font-medium transition-colors" onClick={() => setIsOpen(false)}>
                 About
               </Link>
-              <Link 
-                to="/dashboard" 
-                className="block text-white hover:bg-white/10 px-3 py-2 rounded-md text-base font-medium transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Dashboard
-              </Link>
-              <Link 
-                to="/login" 
-                className="block text-indigo-600 bg-white hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium text-center transition-colors mt-2"
-                onClick={() => setIsOpen(false)}
-              >
-                Logout
-              </Link>
+              {user && (
+                <>
+                  <Link to="/dashboard" className="block text-white hover:bg-white/10 px-3 py-2 rounded-md text-base font-medium transition-colors" onClick={() => setIsOpen(false)}>
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      logoutHandler();
+                    }}
+                    className="block text-indigo-600 bg-white hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium text-center transition-colors mt-2 w-full"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
             </div>
           </motion.div>
         )}

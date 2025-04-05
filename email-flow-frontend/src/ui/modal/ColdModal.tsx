@@ -8,6 +8,7 @@ import { FiUser, FiMail, FiAlignLeft } from "react-icons/fi";
 import { EmailFormData } from "../../types";
 import { useDispatch } from "react-redux";
 import { nodeCreationRequest } from "../../redux/action/nodes";
+import { generateEmailBody } from "../../helpers/openai";
 const modalStyle = {
   position: "absolute",
   top: "50%",
@@ -38,10 +39,21 @@ export const ColdModal: React.FC<ColdModalProps> = ({ isOpen, onClose }) => {
   });
   const dispatch = useDispatch()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+  
     setEmailData(prev => ({ ...prev, [name]: value }));
+  
+    if (name === "subject" && emailData.body.trim() === "") {
+      try {
+        const generated = await generateEmailBody(value);
+        setEmailData(prev => ({ ...prev, body: generated }));
+      } catch (err) {
+        console.error("Failed to auto-generate email body:", err);
+      }
+    }
   };
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
