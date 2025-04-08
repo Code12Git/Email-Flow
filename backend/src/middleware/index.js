@@ -1,2 +1,3 @@
 const verifyData = require('./verifyData')
-module.exports = {verifyData};
+const verifyToken = require('./verifyToken')
+module.exports = {verifyData,verifyToken};

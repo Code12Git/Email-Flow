@@ -5,13 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { publicRequest } from "../helpers/axios";
 import userSchema from "../validation/userValidation";
+import { userRegister } from "../types";
 
 function Register() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ name: string; username: string; email: string; password: string }>({
+  } = useForm({
     resolver: zodResolver(userSchema),
     defaultValues: {
       name: "",
@@ -23,7 +24,7 @@ function Register() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (data: { name: string; username: string; email: string; password: string }) => {
+  const submitHandler = async (data: userRegister) => {
     setIsLoading(true);
     try {
        await publicRequest.post("/user/register", data);

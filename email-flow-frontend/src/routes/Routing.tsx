@@ -1,16 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
 import Register from "../pages/Register";
+import FlowWrapper from "../pages/Dashboard";
 
 const Routing = () => {
   return (
     <Routes>
-      <Route>
-      <Route path="/" element={<Dashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register/>} />
-      </Route>
+      <Route path="/" element={<FlowWrapper />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 };

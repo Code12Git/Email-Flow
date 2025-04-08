@@ -1,3 +1,3 @@
 const userController = require('./userController')
-
-module.exports = {userController}
+const flowController = require('./flowController')
+module.exports = {userController,flowController}

@@ -31,6 +31,8 @@ function Login() {
       const res = await publicRequest.post("/user/login", data);
       localStorage.setItem('user', JSON.stringify(res.data.data)); 
       localStorage.setItem('token', res.data.data.token)
+      window.dispatchEvent(new Event("userChanged"));
+
       toast.success("Login successful!");
       navigate('/')
     } catch (err: any) {

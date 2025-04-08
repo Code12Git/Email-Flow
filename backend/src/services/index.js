@@ -1,4 +1,5 @@
 const responseManager = require('./responseManager');
 const userManager = require('./userManager')
-
-module.exports = { responseManager,userManager }
+const emailManager = require('./emailManager')
+const flowManager = require('./flowManager')
+module.exports = { responseManager,userManager,emailManager,flowManager }
