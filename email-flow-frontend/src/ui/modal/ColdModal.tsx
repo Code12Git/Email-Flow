@@ -9,6 +9,7 @@ import { EmailFormData } from "../../types";
 import { useDispatch } from "react-redux";
 import { nodeCreationRequest } from "../../redux/action/nodes";
 import { generateEmailBody } from "../../helpers/openai";
+import { privateRequest } from "../../helpers/axios";
 const modalStyle = {
   position: "absolute",
   top: "50%",
@@ -55,7 +56,7 @@ export const ColdModal: React.FC<ColdModalProps> = ({ isOpen, onClose }) => {
   };
   
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(emailData)
     dispatch(nodeCreationRequest("3", { type: "emailNode", label: "Send Email", emailData }));

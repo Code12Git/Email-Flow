@@ -1,9 +1,9 @@
-import LeadNode from "../../nodes/LeadNode";
+import LeadNode from "../../nodes/CustomLeadNode";
 import {
-  ADD_NODE,
-  UPDATE_NODE,
   NODE_CREATION_REQUEST,
   DELETE_NODE,
+  ADD_NODE,
+  DELETE_LEAD_NODE,
 } from "../actionTypes/actionTypes";
 import { NodePayload } from "../../types";
 
@@ -11,8 +11,8 @@ const initialState = {
   nodesData: [
     {
       id:"12",
-      position:{x:100,y:-200},
-      type: "leadNode",
+      position:{x:100,y:-100},
+      type: "customNode",
     },
     {
       id: "1",
@@ -83,128 +83,136 @@ const nodesReducer = (
   { type, payload }: { type: string; payload: NodePayload }
 ) => {
   switch (type) {
-    case ADD_NODE:
-      console.log("payload", payload);
-      return {
-        ...state,
-        nodesData: [
-          ...state.nodesData,
-          {
-            id: payload.id,
-            type: payload.type,
-            position: payload.position,
-            data: payload.data,
-          },
-        ],
-      };
-    case UPDATE_NODE:
-      return {
-        ...state,
-        nodesData: state.nodesData.map((node) =>
-          node.id === (payload as NodePayload).id
-            ? { ...node, position: (payload as NodePayload).position }
-            : node
-        ),
-      };
-
-    case NODE_CREATION_REQUEST: {
-      const { originalNodeId, newNodeData } = payload;
-      console.log(
-        "OriginalNodeId:",
-        originalNodeId,
-        "NewNodeId:",
-        newNodeData
-      );
-
-      const {  time } = newNodeData;
-      const plusNode = state.nodesData.find((node) => node.id === "2");
-      if (!plusNode) return state;
-
-      const nodeType =
-        newNodeData.type === "delayNode" ? "waitTimeNode" : "emailNode";
-
-      const nodeLabels = {
-        emailNode: `📧 Email ${newNodeData.emailData?.subject || "New Email"} to ${newNodeData.emailData?.recipient || "Recipient"}`,
-        waitTimeNode: `⏳ Wait Time is ${time?.hours} Hours ${time?.minutes} Minutes`,
-      };
-
+    case ADD_NODE: {
+      
       const newNode = {
-        id: `node-${Date.now()}`,
-        type: nodeType,
-        position: { ...plusNode.position },
-        data: {
-          label: nodeLabels[nodeType],
-          ...(nodeType === "waitTimeNode" && {
-            time: {
-              hours: time?.hours || 0,
-              minutes: time?.minutes || 0,
-            },
-          }),
-        },
-        style: {
-          background: nodeType === "emailNode" ? "#E0F2FE" : "#FEF3C7",
-          color: "#0F172A",
-          border: `2px solid ${
-            nodeType === "emailNode" ? "#0284C7" : "#D97706"
-          }`,
-          borderRadius: "12px",
-          padding: "12px 16px",
-          fontSize: "14px",
-          fontWeight: "bold",
-          width: "20%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        },
+        id: payload.id,
+        type: payload.type,
+        position: payload.position,
+        data: payload.data,
       };
-
-      const updatedPlusNode = {
-        ...plusNode,
-        position: { x: plusNode.position.x, y: plusNode.position.y + 100 },
-      };
-
-      const previousEdges = state.edgesData.map((edge) =>
-        edge.target === plusNode.id ? { ...edge, target: newNode.id } : edge
-      );
-
+    
       const newEdge = {
-        id: `edge-${newNode.id}-plus`,
-        source: newNode.id,
-        target: plusNode.id,
-        type: "customEdge",
-        animated: true,
-        style: { stroke: "#3B82F6", strokeWidth: 2 },
+        id: `${payload.id}-12`,
+        source: payload.id,
+        target: "12",
+        type: "straight",
+        style: { stroke: "#6B7280", strokeWidth: 2 },
+        markerEnd: { type: "arrowclosed", color: "#6B7280" },
       };
-
+    
       return {
         ...state,
-        nodesData: [
-          ...state.nodesData.filter((node) => node.id !== "2"),
-          newNode,
-          updatedPlusNode,
-        ],
-        edgesData: [...previousEdges, newEdge],
+        nodesData: [...state.nodesData, newNode],
+        edgesData: [...state.edgesData, newEdge],
       };
     }
-    case DELETE_NODE: {
-      const nodeIdToDelete = payload.id;
+    
 
-      const updatedNodes = state.nodesData.filter(
-        (node) => node.id !== nodeIdToDelete
-      );
+      case NODE_CREATION_REQUEST: {
+        const { newNodeData } = payload;
+        const { time, emailData } = newNodeData;
+        const plusNode = state.nodesData.find((node) => node.id === "2");
+        if (!plusNode) return state;
+      
+        const nodeType = newNodeData.type === "delayNode" ? "waitTimeNode" : "emailNode";
+      
+       
+        const newNodeId = `node-${Date.now()}`;
+        const newNode = {
+          id: newNodeId,
+          type: nodeType,
+          position: { ...plusNode.position },
+          data: {
+            label:  nodeType,
+            ...(nodeType === "waitTimeNode"
+              ? {
+                nodeId:newNodeId,
+                  time: {
+                    hours: time?.hours || 0,
+                    minutes: time?.minutes || 0,
+                  },
+                }
+              : {
+                nodeId: newNodeId,
+                  emailData: {
+                    subject: emailData?.subject || '',
+                    html: emailData?.body || '',
+                    recipient: emailData?.recipient || ''
+                  }
+                }),
+          },
+     
+        };
+      
+        const updatedPlusNode = {
+          ...plusNode,
+          position: { x: plusNode.position.x, y: plusNode.position.y + 100 },
+        };
+      
+        const previousEdges = state.edgesData.map((edge) =>
+          edge.target === plusNode.id ? { ...edge, target: newNode.id } : edge
+        );
+      
+        const newEdge = {
+          id: `edge-${newNode.id}-plus`,
+          source: newNode.id,
+          target: plusNode.id,
+          type: "customEdge",
+          animated: true,
+          style: { stroke: "#3B82F6", strokeWidth: 2 },
+        };
+      
+        return {
+          ...state,
+          nodesData: [
+            ...state.nodesData.filter((node) => node.id !== "2"),
+            newNode,
+            updatedPlusNode,
+          ],
+          edgesData: [...previousEdges, newEdge],
+        };
+      }
 
-      const updatedEdges = state.edgesData.filter(
-        (edge) =>
-          edge.source !== nodeIdToDelete && edge.target !== nodeIdToDelete
-      );
+ case DELETE_NODE: {
+  const nodeIdToDelete = payload.id;
+  
+   state.edgesData.filter(
+    edge => edge.source === nodeIdToDelete || edge.target === nodeIdToDelete
+  );
 
-      return {
-        ...state,
-        nodesData: updatedNodes,
-        edgesData: updatedEdges,
-      };
-    }
+   const incomingEdge = state.edgesData.find(edge => edge.target === nodeIdToDelete);
+  const outgoingEdge = state.edgesData.find(edge => edge.source === nodeIdToDelete);
+
+   const newEdges = [];
+  if (incomingEdge && outgoingEdge) {
+    newEdges.push({
+      id: `edge-${incomingEdge.source}-${outgoingEdge.target}`,
+      source: incomingEdge.source,
+      target: outgoingEdge.target,
+      type: 'customEdge'
+    });
+  }
+
+  return {
+    ...state,
+    nodesData: state.nodesData.filter(node => node.id !== nodeIdToDelete),
+    edgesData: [
+       ...state.edgesData.filter(
+        edge => edge.source !== nodeIdToDelete && edge.target !== nodeIdToDelete
+      ),
+       ...newEdges
+    ]
+  };
+}
+
+case DELETE_LEAD_NODE: {
+  const leadNodeId = payload.id || payload; 
+  return {
+    ...state,
+    nodesData: state.nodesData.filter((node) => node.id !== leadNodeId),
+}
+}
 
     default:
       return state;

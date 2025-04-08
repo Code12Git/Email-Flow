@@ -71,6 +71,8 @@ export interface NodePayload {
   type: string;
   data: unknown;
   originalNodeId:string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  edge?: any;
   newNodeData: {
     type: string;
     label: string;

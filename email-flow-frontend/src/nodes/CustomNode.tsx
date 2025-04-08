@@ -1,8 +1,5 @@
-import { useDispatch } from 'react-redux';
-import { deleteNode } from '../redux/action/nodes';
 
 const CustomNode = ({ id, data }) => {
-  const dispatch = useDispatch();
 
   return (
     <div 
@@ -17,21 +14,13 @@ const CustomNode = ({ id, data }) => {
         width: "150px",
       }}
     >
-      <span>{data.label}</span>
-      <button 
-        onClick={() => dispatch(deleteNode(id))}
-        style={{
-          marginLeft: '10px',
-          background: 'red',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          padding: '4px 8px',
-          cursor: 'pointer'
-        }}
-      >
-        ❌
-      </button>
+      {/* <span>{data.label}</span> */}
+      <button onClick={(e) => {
+  e.stopPropagation();
+  data.deleteNode?.();
+}}>
+  ❌
+</button>
     </div>
   );
 };

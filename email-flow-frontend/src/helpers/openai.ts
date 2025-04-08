@@ -2,14 +2,15 @@
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import pLimit from 'p-limit';
 
-// dotenv.config();
 
-console.log('openai')
 
 const limit = pLimit(3)
 
-const GOOGLE_GEMINI_API_KEY: string = 'AIzaSyBNd0mXSDLl-NicOoQ9kfzI_2Rdc9XA2V4';
-const genAI = new GoogleGenerativeAI(GOOGLE_GEMINI_API_KEY);
+const api= import.meta.env.VITE_GOOGLE_GEMINI_API_KEY
+if (!api) {
+  throw new Error('Missing GOOGLE_GEMINI_API_KEY in environment variables');
+}
+const genAI = new GoogleGenerativeAI(api);
 
 
 

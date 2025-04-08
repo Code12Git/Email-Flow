@@ -1,9 +1,8 @@
 const express = require('express');
-
 const userRoutes = require('./userRoutes');
-const emailRoutes = require('./emailRoutes')
+const flowRoutes = require('./flowRoutes')
 const router = express.Router();
 
 router.use('/user',userRoutes)
-router.use('/email',emailRoutes)
+router.use('/flow',flowRoutes)
 module.exports = router;

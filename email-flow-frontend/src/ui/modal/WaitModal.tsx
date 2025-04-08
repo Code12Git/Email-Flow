@@ -42,7 +42,6 @@ export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose, onSubmit 
     }));
   };
 
-  console.log(waitTime)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

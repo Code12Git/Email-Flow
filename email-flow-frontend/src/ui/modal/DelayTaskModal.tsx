@@ -23,9 +23,11 @@ const modalStyle = {
 function DelayTaskModal({
   isModalOpen,
   setIsModalOpen,
+  edge
 }: {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  edge: boolean | null;
 }) {
   const [coldEmailModalOpen, setColdEmailModalOpen] = React.useState(false);
   const [waitModalOpen, setWaitModalOpen] = React.useState(false);
@@ -36,6 +38,7 @@ function DelayTaskModal({
     console.log("Email data submitted:", emailData);
     setColdEmailModalOpen(false);
     setIsModalOpen(false);
+    
   };
 
   const handleWaitSubmit = (waitTime: { hours: number; minutes: number }) => {

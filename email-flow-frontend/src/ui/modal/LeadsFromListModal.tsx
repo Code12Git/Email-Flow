@@ -23,28 +23,26 @@ import { Close, Search, Add } from '@mui/icons-material';
 import type { ListItems } from '../../types';
 import { useDispatch } from 'react-redux';
 import { addNode } from '../../redux/action/nodes';
+import { AppDispatch } from '../../redux/store';
+
+interface LeadsFromListModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (selectedListsDetails: ListItems[]) => void;
+}
 
 
 
-const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose: () => void }) => {
+const LeadsFromListModal = ({ open, onClose,onSubmit }: LeadsFromListModalProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLists, setSelectedLists] = useState<string[]>([]);
   const [selectedListsDetails, setSelectedListsDetails] = useState<ListItems[]>([]);
   const [newListName, setNewListName] = useState('');
   const [showNewListField, setShowNewListField] = useState(false);
-  const dispatch = useDispatch()
-  // Mock data - replace with your actual lists data
+  const dispatch = useDispatch<AppDispatch>()
   const lists: ListItems[] = [
     { id: '1', name: 'John Doe', email: 'john.doe@example.com', company: 'ABC Corp', status: 'Premium Customer' },
-    { id: '2', name: 'Jane Smith', email: 'jane.smith@example.com', company: 'XYZ Ltd', status: 'Trial User' },
-    { id: '3', name: 'Alice Johnson', email: 'alice.johnson@example.com', company: 'Tech Innovations', status: 'Enterprise Lead' },
-    { id: '4', name: 'Bob Williams', email: 'bob.williams@example.com', company: 'Marketing Solutions', status: 'Cold Prospect' },
-    { id: '5', name: 'Charlie Brown', email: 'charlie.brown@example.com', company: 'E-commerce Experts', status: 'Premium Customer' },
-    { id: '6', name: 'Emily Davis', email: 'emily.davis@example.com', company: 'SaaS Hub', status: 'Trial User' },
-    { id: '7', name: 'Michael Scott', email: 'michael.scott@example.com', company: 'Paper Co.', status: 'Enterprise Lead' },
-    { id: '8', name: 'Sarah Lee', email: 'sarah.lee@example.com', company: 'AI Startups Inc.', status: 'Cold Prospect' },
-    { id: '9', name: 'David Kim', email: 'david.kim@example.com', company: 'Finance Edge', status: 'Premium Customer' },
-    { id: '10', name: 'Olivia Martinez', email: 'olivia.martinez@example.com', company: 'EdTech Solutions', status: 'Trial User' },
+
   ];
 
 
@@ -69,10 +67,8 @@ const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose
     console.log('List details:', listDetails);
     return listDetails;
   };
-  console.log(selectedLists)
-
+ 
   const handleCreateNewList = () => {
-    // Implement your new list creation logic here
     setShowNewListField(true);
   };
   const handleAddNewList = () => {
@@ -85,30 +81,41 @@ const LeadsFromListModal = ({ open, onClose,onSubmit }: { open: boolean; onClose
         status: 'New List'
       };
       
-      // In a real app, you would probably make an API call here to save the new list
       lists.push(newList);
       
-      // Select the newly created list
-      handleToggleList(newList.id);
+       handleToggleList(newList.id);
       
-      // Reset the new list form
-      setNewListName('');
+       setNewListName('');
       setShowNewListField(false);
     }
   };
 
-  console.log(selectedListsDetails)
 
   const handleSubmit = () => {
     if (selectedListsDetails.length > 0) {
-      console.log(selectedListsDetails)
-      // onSubmit(selectedListsDetails);
-      dispatch(addNode(selectedListsDetails,'leadNode'))
+      const nodeData = {
+        leads: selectedListsDetails,
+        loading: false,
+        error: undefined
+      };
+      
+      const nodeType = 'leadNode';
+      const nodePosition = { x: 100, y: -150 };
+  
+      dispatch(
+        addNode(
+          nodeData,
+          nodeType,
+          nodePosition,
+        )
+      );
+      onSubmit(selectedListsDetails)
+  
+      onClose();
     }
-    onClose();
   };
 
-
+ 
   return (
     <Dialog
       open={open}
