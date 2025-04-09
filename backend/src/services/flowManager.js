@@ -4,9 +4,6 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const flow = async (body) => {
   try {
-    if (!body || typeof body !== 'object') {
-      throw new Error("Invalid flow data: expected an object");
-    }
     const data = await executeFlow(body);
     return data;
   } catch (error) {
@@ -20,7 +17,6 @@ const executeFlow = async (flow) => {
     if (!flow || !Array.isArray(flow.nodes)) {
       throw new Error("Invalid flow structure: expected 'nodes' array");
     }
-
     const sortedNodes = [...flow.nodes].sort((a, b) => a.position?.y - b.position?.y);
 
     for (const node of sortedNodes) {
