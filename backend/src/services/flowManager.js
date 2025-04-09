@@ -4,19 +4,30 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const flow = async (body) => {
   try {
-    const flow = body;
-    const data = await executeFlow(flow);
+    if (!body || typeof body !== 'object') {
+      throw new Error("Invalid flow data: expected an object");
+    }
+    const data = await executeFlow(body);
     return data;
   } catch (error) {
+    console.error("Flow processing failed:", error);
     throw error;
   }
 };
 
 const executeFlow = async (flow) => {
   try {
-    const sortedNodes = [...flow].sort((a, b) => a.position.y - b.position.y);
+    if (!flow || !Array.isArray(flow.nodes)) {
+      throw new Error("Invalid flow structure: expected 'nodes' array");
+    }
+
+    const sortedNodes = [...flow.nodes].sort((a, b) => a.position?.y - b.position?.y);
 
     for (const node of sortedNodes) {
+      if (!node || typeof node !== 'object') {
+        console.error("Invalid node encountered, skipping");
+        continue;
+      }
 
       switch (node.type) {
         case "emailNode": {
@@ -55,10 +66,10 @@ const executeFlow = async (flow) => {
       }
     }
 
-    return { success: true };
+    return { success: true, message: "Flow executed successfully" };
   } catch (error) {
     console.error("Flow execution failed:", error);
-    throw error;
+    throw new Error(`Flow execution failed: ${error.message}`);
   }
 };
 
