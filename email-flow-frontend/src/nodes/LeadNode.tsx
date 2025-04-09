@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { NodeProps } from 'reactflow';
 import { DELETE_LEAD_NODE } from '../redux/actionTypes/actionTypes';
 import { AppDispatch } from '../redux/store';
@@ -11,16 +11,18 @@ interface Lead {
   company: string;
   status: string;
 }
-
-const LeadNode: React.FC<NodeProps<{ leads?: Lead[]; loading?: boolean; error?: string }>> = ({ data }) => {
-  // Calculate dynamic dimensions based on number of leads
+interface LeadNodeData {
+  leads?: Lead[];
+  loading?: boolean;
+  error?: string;
+}
+const LeadNode: React.FC<NodeProps<LeadNodeData>> = ({ data, id }) => {
   const dispatch = useDispatch<AppDispatch>()
   const leadCount = data.leads?.length || 0;
   const baseHeight = 120; 
   const leadItemHeight = 60;  
   const maxHeight = 400; 
   const calculatedHeight = Math.min(baseHeight + (leadCount * leadItemHeight), maxHeight);
-
   if (data.loading) {
     return (
       <div className="p-4 rounded-lg bg-gray-50 text-gray-600" style={{ width: '200px', height: `${baseHeight}px` }}>
@@ -45,10 +47,10 @@ const LeadNode: React.FC<NodeProps<{ leads?: Lead[]; loading?: boolean; error?: 
     );
   }
 
-  const deleteChangeHandler = (leadId: string) => {
+  const deleteChangeHandler = () => {
     dispatch({
       type: DELETE_LEAD_NODE,
-      payload: leadId
+      payload: id
     });
     
   }
@@ -72,7 +74,7 @@ const LeadNode: React.FC<NodeProps<{ leads?: Lead[]; loading?: boolean; error?: 
       </div>
       <button
         className='cursor-pointer text-red-500 hover:text-red-700 transition duration-200'
-        onClick={() => deleteChangeHandler(data?.leads?.id)}
+        onClick={deleteChangeHandler }
         title="Delete lead"
       >
         ✕

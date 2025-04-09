@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   BaseEdge,
   EdgeLabelRenderer,
   getStraightPath,
-  EdgeProps
+  EdgeProps,
 } from '@xyflow/react';
 import { useDispatch } from 'react-redux';
 import { OPEN_MODAL } from '../redux/actionTypes/actionTypes';
@@ -11,7 +10,10 @@ import DelayTaskModal from '../ui/modal/DelayTaskModal';
 import { useState } from 'react';
 
 interface CustomEdgeData {
-  [key: string]: any;
+  id: string;
+  source: string;
+  target: string;
+  [key: string]: unknown;
 }
 
 interface ModalPayload {
@@ -30,24 +32,20 @@ export default function CustomEdge({
   targetX,
   targetY,
   source,
-  sourcePosition,
-  targetPosition,
   markerEnd,
   markerStart,
-
   style,
   interactionWidth,
 }: EdgeProps<CustomEdgeData>) {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  // Corrected getStraightPath call - only includes the required parameters
   const [edgePath, labelX, labelY] = getStraightPath({
     sourceX,
     sourceY,
     targetX,
     targetY,
-    sourcePosition,
-    targetPosition,
   });
 
   const handleOpenModal = () => {
@@ -67,7 +65,7 @@ export default function CustomEdge({
       <BaseEdge
         id={id}
         path={edgePath}
-        style={style}
+        style={style as React.CSSProperties | undefined}
         markerEnd={markerEnd}
         markerStart={markerStart}
         interactionWidth={interactionWidth}

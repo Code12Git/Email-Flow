@@ -7,6 +7,7 @@ import { BiTimeFive } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
 import { nodeCreationRequest } from "../../redux/action/nodes";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
 
 const modalStyle = {
   position: "absolute",
@@ -26,13 +27,15 @@ interface WaitModalProps {
   onSubmit: (waitTime: { hours: number; minutes: number }) => void;
 }
 
-export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose, onSubmit }) => {
+
+
+export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose }) => {
   const [waitTime, setWaitTime] = React.useState({
     hours: 0,
-    minutes: 30, // Default to 30 minutes
+    minutes: 30, 
   });
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,8 +49,12 @@ export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose, onSubmit 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    dispatch(nodeCreationRequest("3", { type: "delayNode", time:waitTime }));
-    
+    dispatch(
+      nodeCreationRequest("3", {
+        type: "delayNode",
+        time: waitTime,
+      })
+    );    
     onClose();
   };
   

@@ -7,6 +7,7 @@ import { AiOutlineClose, AiOutlineMail } from "react-icons/ai";
 import { BiTimeFive } from "react-icons/bi";
 import { ColdModal } from "./ColdModal";
 import { WaitModal } from "./WaitModal";
+import { EmailFormData } from "../../types";
 
 const modalStyle = {
   position: "absolute",
@@ -23,7 +24,6 @@ const modalStyle = {
 function DelayTaskModal({
   isModalOpen,
   setIsModalOpen,
-  edge
 }: {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,7 +34,7 @@ function DelayTaskModal({
 
   const handleClose = () => setIsModalOpen(false);
 
-  const handleEmailSubmit = (emailData: any) => {
+  const handleEmailSubmit = (emailData: EmailFormData) => {
     console.log("Email data submitted:", emailData);
     setColdEmailModalOpen(false);
     setIsModalOpen(false);

@@ -10,107 +10,99 @@ import {
   EdgeChange,
   Node,
   Edge,
+  NodeTypes,
+  EdgeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import DelayTaskModal from '../ui/modal/DelayTaskModal';
-import { useSelector } from 'react-redux';
 import CustomEdge from '../edges/CustomEdge';
 import CustomNode from '../nodes/CustomNode';
 import CustomLeadNode from '../nodes/CustomLeadNode';
 import LeadNode from '../nodes/LeadNode';
 import { Button } from '@mui/material';
-import {   privateRequest } from '../helpers/axios';
+import { privateRequest } from '../helpers/axios';
 import DelayNode from '../nodes/DelayNode';
 import EmailNode from '../nodes/EmailNode';
-
+import { useAppSelector } from '../hooks/hooks';
+import { RootState } from '../redux/store';
+import toast from 'react-hot-toast';
+// Interfaces
 interface CustomNodeData {
-  // Define your node data interface here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
 interface CustomEdgeData {
-  // Define your edge data interface here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
-const nodeTypes = {
+// Node & Edge Types for React Flow
+const nodeTypes: NodeTypes = {
   leadSourceNode: CustomNode,
   customNode: CustomLeadNode,
-  leadNode:LeadNode,
+  leadNode: LeadNode,
   waitTimeNode: DelayNode,
-  emailNode:EmailNode
+  emailNode: EmailNode,
 };
 
-const edgeTypes = {
-  customEdge: CustomEdge
-}
-
+const edgeTypes: EdgeTypes = {
+  customEdge: CustomEdge,
+};
 
 
 const Dashboard = () => {
-  const { nodesData, edgesData } = useSelector((state: any) => state.nodes);
+  // Strongly type selector
+  const { nodesData, edgesData } = useAppSelector((state: RootState) => state.nodes ?? { nodesData: [], edgesData: [] });
+
+  // Ensure nodesData and edgesData are correctly typed
   const [nodes, setNodes] = useState<Node<CustomNodeData>[]>(nodesData);
   const [edges, setEdges] = useState<Edge<CustomEdgeData>[]>(edgesData);
-  const [isReady, setIsReady] = useState(false); 
-
+  const [isReady, setIsReady] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setNodes(nodesData);
     setEdges(edgesData);
-    setIsReady(true); 
+    setIsReady(true);
   }, [nodesData, edgesData]);
-
-
-
-
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
     []
   );
-  
+
   const onEdgesChange = useCallback(
     (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     []
   );
 
+  const onNodeClick = useCallback(
+    (_: React.MouseEvent, node: Node<CustomNodeData>) => {
+      if (node.id === '2') setIsModalOpen(true);
+    },
+    []
+  );
 
   const handleSaveFlow = async () => {
     try {
-      const response = await privateRequest.post('/flow',nodesData)
-      console.log("Flow executed successfully:", response.data);
+       await privateRequest.post('/flow', nodesData);
+      toast.success('Flow saved successfully!')
     } catch (error) {
-      console.error("Failed to execute flow:", error);
+      console.error('Failed to execute flow:', error);
     }
   };
-  
- 
 
-  
-  
-
-  const onNodeClick = useCallback(
-    (event: React.MouseEvent, node: Node<CustomNodeData>) => {
-      if (node.id === '2') setIsModalOpen(true);
-    }, 
-    []
-  );
-    if (!isReady) return <div>Loading...</div>;
-
-  console.log(nodesData)
+  if (!isReady) return <div>Loading...</div>;
 
   return (
     <div style={{ height: '100vh', width: '100vw', position: 'relative' }}>
-      {/* Save Flow Button (Always Visible) */}
       <div style={{ position: 'absolute', top: 600, right: 40, zIndex: 10 }}>
         <Button onClick={handleSaveFlow} variant="contained" color="primary">
           Save Flow
         </Button>
       </div>
 
-
-      {/* ReactFlow (Only Renders if Nodes & Edges Exist) */}
       {nodes.length > 0 && edges.length > 0 ? (
         <ReactFlow
           nodes={nodes}
@@ -122,16 +114,12 @@ const Dashboard = () => {
           edgeTypes={edgeTypes}
           fitView
         >
-          <DelayTaskModal
-          edge={null}
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-          />
+          <DelayTaskModal edge={null} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
           <Background color="#E5E7EB" gap={16} />
           <Controls />
         </ReactFlow>
       ) : (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <div className="flex justify-center items-center h-full">
           <p>No nodes or edges found. Start by adding elements.</p>
         </div>
       )}
@@ -139,12 +127,10 @@ const Dashboard = () => {
   );
 };
 
-const FlowWrapper = () => {
-  return (
-    <ReactFlowProvider>
-      <Dashboard />
-    </ReactFlowProvider>
-  )
-}
+const FlowWrapper = () => (
+  <ReactFlowProvider>
+    <Dashboard />
+  </ReactFlowProvider>
+);
 
 export default FlowWrapper;

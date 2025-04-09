@@ -1,11 +1,11 @@
-import { ModalPayload } from "../../types";
+import { ModalPayload, ModalState } from "../../types";
 import { CLOSE_MODAL, OPEN_MODAL } from "../actionTypes/actionTypes"
  
-export const initialModalState = [{
-    isOpen:false,
-    modalType: null,
-    currentNodeId: null
-}]
+export const initialModalState:ModalState = {
+    isOpen: false,
+    modalType: null, 
+    currentNodeId: null 
+};
 
 
 

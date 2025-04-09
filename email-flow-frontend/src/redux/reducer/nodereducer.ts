@@ -76,7 +76,6 @@ const initialState = {
 
 
 
-console.log(initialState.nodesData);
 
 const nodesReducer = (
   state = initialState,
@@ -84,7 +83,6 @@ const nodesReducer = (
 ) => {
   switch (type) {
     case ADD_NODE: {
-      
       const newNode = {
         id: payload.id,
         type: payload.type,

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ADD_NODE, DELETE_NODE, NODE_CREATION_REQUEST, UPDATE_NODE } from "../actionTypes/actionTypes";
-
+import { v4 as uuidv4 } from 'uuid';
 interface NodeData {
   leads?: Array<{
     id: string;
@@ -9,6 +9,11 @@ interface NodeData {
     company: string;
     status: string;
   }>;
+  type?: string;
+  time?: {
+    hours: number;
+    minutes: number;
+  };
   loading?: boolean;
   error?: string;
 }
@@ -35,11 +40,10 @@ export const addNode = (nodeData: NodeData, type: string, position: NodePosition
     console.error('Invalid position provided:', position);
     position = { x: 0, y: 0 }; // Default position if invalid
   }
-  console.log('Triggered',type)
   dispatch({
     type: ADD_NODE,
     payload: {
-      id: `node-${Date.now()}`,
+      id: uuidv4(),
       position: position,
       type: type,
       data: nodeData ,

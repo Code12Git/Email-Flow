@@ -13,7 +13,7 @@ const Navbar = () => {
       setUser(storedUser ? JSON.parse(storedUser) : null);
     };
   
-    handleUserChange(); // Call once on mount
+    handleUserChange(); 
   
     window.addEventListener("userChanged", handleUserChange);
   
