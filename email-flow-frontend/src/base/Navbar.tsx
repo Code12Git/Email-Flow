@@ -58,13 +58,8 @@ const Navbar = () => {
               Home
             </Link>)}
         
-            <Link to="/register" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
-                Register
-              </Link>
-              <Link to="/login" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
-               Login
-              </Link>
-            {user && (
+           
+            {user ? (
               <>
                 <Link to="/dashboard" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
                   Dashboard
@@ -76,6 +71,15 @@ const Navbar = () => {
                   Logout
                 </button>
               </>
+            ):(
+              < div className="flex items-center gap-4">
+              <Link to="/register" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
+              Register
+            </Link>
+            <Link to="/login" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
+             Login
+            </Link>
+            </div>
             )}
           </div>
 
@@ -112,7 +116,7 @@ const Navbar = () => {
               </Link>
           
             
-              {user && (
+              {user ? (
                 <>
                   <Link to="/dashboard" className="block text-white hover:bg-white/10 px-3 py-2 rounded-md text-base font-medium transition-colors" onClick={() => setIsOpen(false)}>
                     Dashboard
@@ -127,7 +131,14 @@ const Navbar = () => {
                     Logout
                   </button>
                 </>
-              )}
+              ):( < div className="flex items-center gap-4">
+              <Link to="/register" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                Register
+              </Link>
+              <Link to="/login" className="text-white hover:text-gray-200 transition-colors px-3 py-2 rounded-md text-sm font-medium">
+               Login
+              </Link>
+            </div>)}
             </div>
           </motion.div>
         )}
