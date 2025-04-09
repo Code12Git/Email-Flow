@@ -6,14 +6,27 @@ export type UserLogin = {
 }
 
 export type userRegister = {
-    name:string,
-    username:string,
-    email:string,
-    password:string,
+  email: string;
+  password: string;
+  name?: string;
+  username?: string;
+  id?: number;
+  role?: "admin" | "user";
+  emailQuota?: number;
+  isVerified?: boolean;
+};
+// types/nodes.ts
+export interface BaseNodeData {
+  label?: string;
+  [key: string]: unknown;
 }
 
+export interface LeadNodeData extends BaseNodeData {
+  // Lead-specific properties
+  leadId?: string;
+  status?: 'new' | 'contacted' | 'qualified';
+}
 
- 
 
 export type EmailNodeData = {
     subject: string;

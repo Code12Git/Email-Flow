@@ -13,10 +13,7 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: fromEnv('ALLOWED_ORIGINS')?.split(',') || '*', 
-  optionsSuccessStatus: 200
-}));
+app.use(cors());
 
 app.use('/api', routes); 
 
