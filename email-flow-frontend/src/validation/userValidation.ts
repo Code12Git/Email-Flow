@@ -12,7 +12,7 @@ const userSchema = z.object({
     emailQuota: z.number()
         .min(0, { message: 'Quota should be minimum 0' })
         .max(8000, { message: 'Quota should be maximum 8000' })
-        .default(400),
+        .default(400).optional(),
     isVerified: z.boolean().optional(),
     password: z.string()
         .min(6, { message: 'Password must be at least 6 characters long' })

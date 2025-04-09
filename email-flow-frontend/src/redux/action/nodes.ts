@@ -9,6 +9,8 @@ interface NodeData {
     company: string;
     status: string;
   }>;
+  label?: string;
+  emailData?:any;
   type?: string;
   time?: {
     hours: number;

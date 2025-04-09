@@ -7,6 +7,8 @@ import { publicRequest } from "../helpers/axios";
 import userSchema from "../validation/userValidation";
 import { userRegister } from "../types";
 
+
+
 function Register() {
   const {
     register,
