@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import LeadSourceModal from '../ui/modal/LeadSouceModal';
  
-const CustomLeadNode = ({data}) => {
+const CustomLeadNode = () => {
 
   return (
     <motion.div

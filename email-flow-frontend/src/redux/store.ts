@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; 
 import modalReducer from './reducer/modalreducer';
 import nodesReducer from './reducer/nodereducer';
+import { ModalState, NodeState } from '../types';
 
  const persistConfig = {
   key: 'root',
@@ -11,11 +12,13 @@ import nodesReducer from './reducer/nodereducer';
 };
 
  const rootReducer = combineReducers({
-  modal: modalReducer,
-  nodes:nodesReducer
+  modal: modalReducer as Reducer<ModalState>,
+  nodes: nodesReducer as unknown as Reducer<NodeState>
 });
 
- const persistedReducer = persistReducer(persistConfig, rootReducer);
+export type RootState = ReturnType<typeof rootReducer>;
+
+ const persistedReducer = persistReducer<ReturnType<typeof rootReducer>>(persistConfig, rootReducer);
 
  const store = createStore(
   persistedReducer,
@@ -25,5 +28,4 @@ import nodesReducer from './reducer/nodereducer';
  const persistor = persistStore(store);
 
 export { store, persistor };
-export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

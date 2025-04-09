@@ -27,7 +27,7 @@ const style = {
 export default function LeadSourceModal() {
   const [open, setOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [data,setData] = React.useState([])
+  const [data, setData] = React.useState<SelectedListDetails[]>([])
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleLeads = () => setIsModalOpen(true);
@@ -36,13 +36,20 @@ export default function LeadSourceModal() {
     setOpen(false);
   };
 
-  const onSubmit = (selectedListsDetails) => {
-    setData(selectedListsDetails)
+  interface SelectedListDetails {
+    id: string;
+    name: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any; // Add additional properties if needed
+  }
+
+  const onSubmit = (selectedListsDetails: SelectedListDetails[]) => {
+    setData(selectedListsDetails);
   };
 
-
+  console.log(data)
   return (
-<div className={`${data ? 'ml-64' : 'ml-0'}`}>
+<div className={`${data.length>0 ? 'ml-64' : 'ml-0'}`}>
    <motion.button
         onClick={handleOpen}
         className="bg-red-400 cursor-pointer text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#059669] transition"

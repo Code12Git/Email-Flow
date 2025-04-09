@@ -1,5 +1,13 @@
 
-const CustomNode = ({ id, data }) => {
+import React from "react";
+
+interface CustomNodeProps {
+  data: {
+    deleteNode?: () => void;
+  };
+}
+
+const CustomNode: React.FC<CustomNodeProps> = ({ data }) => {
 
   return (
     <div 

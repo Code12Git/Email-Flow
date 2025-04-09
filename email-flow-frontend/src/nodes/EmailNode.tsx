@@ -1,12 +1,13 @@
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/store"; // Adjust the path to your store file
 import { Handle, Position, NodeProps } from "reactflow";
 import { deleteNode } from "../redux/action/nodes";
-
 type EmailNodeData = {
   subject?: string;
   body?: string;
   from?: string;
   label?: string;
+  nodeId: string;  
   emailData?: {
     subject?: string;
     recipient?: string;
@@ -15,10 +16,8 @@ type EmailNodeData = {
 
 
 export default function EmailNode({ data }: NodeProps<EmailNodeData>) {
-
-  console.log(data)
-const dispatch = useDispatch();
-  const handleDelete = (e: React.MouseEvent) => {
+const dispatch: AppDispatch = useDispatch();
+    const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     dispatch(deleteNode(data.nodeId))
   }

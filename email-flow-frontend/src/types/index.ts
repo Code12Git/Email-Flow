@@ -59,6 +59,7 @@ export interface EmailFormData {
 
 export interface NodeCreation {
   originalNodeId: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   newNodeData: any;
 }
 export interface LeadNodeData {
@@ -83,9 +84,22 @@ export interface NodePayload {
     emailData?: {
       subject: string;
       recipient: string;
+      body:string;
     };
   };
   // Add other node properties as needed
+}
+
+export interface ModalState {
+  isOpen: boolean;
+  modalType: string | null;
+  currentNodeId: string | null;
+}
+
+export interface NodeState {
+  nodesData: Node[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  edgesData: any[]; 
 }
 
 //   export type AppNode = {
@@ -94,4 +108,25 @@ export interface NodePayload {
 //     position: { x: number; y: number };
 //     data: EmailNodeData | DelayNodeData | LeadSourceNodeData | { label: string };
 //   };
- 
+export type NodeData = {
+  id: string;
+  type?: string;
+
+  time?: {
+    hours: number;
+    minutes: number;
+  };
+  label: string;
+  [key: string]: unknown; // Add this to satisfy the constraint
+};
+
+
+
+export interface WaitNodeData {
+  type: string;
+  time: {
+    hours: number;
+    minutes: number;
+  };
+  // any other fields...
+}

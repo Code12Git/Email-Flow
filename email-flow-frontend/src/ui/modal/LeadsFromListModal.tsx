@@ -104,6 +104,7 @@ const LeadsFromListModal = ({ open, onClose,onSubmit }: LeadsFromListModalProps)
   
       dispatch(
         addNode(
+          
           nodeData,
           nodeType,
           nodePosition,
@@ -170,7 +171,7 @@ const LeadsFromListModal = ({ open, onClose,onSubmit }: LeadsFromListModalProps)
             sx={{ mb: 2 }}
           />
 
-{showNewListField ? (
+        {showNewListField ? (
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <TextField
                 fullWidth
