@@ -5,7 +5,7 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import { BiTimeFive } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
-import { nodeCreationRequest } from "../../redux/action/nodes";
+import { nodeCreation } from "../../redux/action/nodes";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 
@@ -22,20 +22,21 @@ const modalStyle = {
 };
 
 interface WaitModalProps {
-  isOpen: boolean;
+  isWaitModalOpen: boolean;
   onClose: () => void;
-  onSubmit: (waitTime: { hours: number; minutes: number }) => void;
+  setIsWaitModalOpen:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
 
-export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose }) => {
+export const WaitModal: React.FC<WaitModalProps> = ({ isWaitModalOpen,setIsWaitModalOpen, onClose }) => {
   const [waitTime, setWaitTime] = React.useState({
     hours: 0,
     minutes: 30, 
   });
 
   const dispatch = useDispatch<AppDispatch>()
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,18 +50,14 @@ export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    dispatch(
-      nodeCreationRequest("3", {
-        type: "delayNode",
-        time: waitTime,
-      })
-    );    
+    dispatch(nodeCreation( waitTime, 'DelayNode'))
+
     onClose();
   };
   
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isWaitModalOpen} onClose={onClose}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -73,7 +70,7 @@ export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose }) => {
               <BiTimeFive className="mr-2 text-green-500" size={24} />
               Add Wait Time
             </h2>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition">
+            <button onClick={()=>setIsWaitModalOpen(false)} className="text-gray-500 hover:text-gray-700  cursor-pointer transition">
               <AiOutlineClose size={24} />
             </button>
           </div>
@@ -113,7 +110,7 @@ export const WaitModal: React.FC<WaitModalProps> = ({ isOpen, onClose }) => {
             <div className="pt-6 flex justify-end space-x-3">
               <Button
                 type="button"
-                onClick={onClose}
+                onClick={()=>setIsWaitModalOpen(false)}
                 variant="outlined"
                 className="border-gray-300 text-gray-700 hover:bg-gray-50"
               >

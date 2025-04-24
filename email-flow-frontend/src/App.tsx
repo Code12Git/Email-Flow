@@ -1,18 +1,13 @@
-import "./App.css";
-import { Toaster } from "react-hot-toast";
-import Routing from "./routes/Routing";
-import Navbar from "./base/Navbar";
- 
-function App() {
-
-
+import React from "react"
+import { Toaster } from "react-hot-toast"
+import Routing from "./routes/Routing"
+const App = () => {
   return (
-    <>
-       <Toaster />
-       <Navbar />
-      <Routing />
-      </>
-   );
+    <React.Fragment>
+    <Toaster />
+    <Routing />
+    </React.Fragment>
+  )
 }
 
-export default App;
+export default App

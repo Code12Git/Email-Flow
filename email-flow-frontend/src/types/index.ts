@@ -1,113 +1,20 @@
+import { Node } from "@xyflow/react";
 
-// import type { Node, BuiltInNode } from '@xyflow/react';
 export type UserLogin = {
-    email:string,
-    password:string
+  email:string,
+  password:string
 }
 
 export type userRegister = {
-  email: string;
-  password: string;
-  name?: string;
-  username?: string;
-  id?: number;
-  role?: "admin" | "user";
-  emailQuota?: number;
-  isVerified?: boolean;
+email: string;
+password: string;
+name?: string;
+username?: string;
+id?: number;
+role?: "admin" | "user";
+emailQuota?: number;
+isVerified?: boolean;
 };
-// types/nodes.ts
-export interface BaseNodeData {
-  label?: string;
-  [key: string]: unknown;
-}
-
-export interface LeadNodeData extends BaseNodeData {
-  // Lead-specific properties
-  leadId?: string;
-  status?: 'new' | 'contacted' | 'qualified';
-}
-
-
-export type EmailNodeData = {
-    subject: string;
-    content: string;
-    recipient: string;
-  };
-  
-  export type DelayNodeData = {
-    delayHours: number;
-  };
-  
-  export type LeadSourceNodeData = {
-    source: string;
-  };
-  
-
-
-  export interface ModalPayload {
-    modalType: string | null;
-    nodeId: string | null;
-  }
-
-  export const ModalState = [{
-    isOpen:Boolean,
-    modalType: String,
-    currentNodeId: String
-}]
-
-
-export interface ListItems {
-  id: string;
-  name: string;
-  email:string,
-  company:string,
-  status:string
-}
-
-export interface EmailFormData {
-  recipient: string;
-  subject: string;
-  body: string;
-}
-
-export interface NodeCreation {
-  originalNodeId: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  newNodeData: any;
-}
-export interface LeadNodeData {
-  label?: string;
-  description?: string;
-}
-export interface NodePayload {
-  id: string;
-  position: { x: number; y: number };
-  type: string;
-  data: unknown;
-  originalNodeId:string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  edge?: any;
-  newNodeData: {
-    type: string;
-    label: string;
-    time?: {
-      hours: number;
-      minutes: number;
-    };
-    emailData?: {
-      subject: string;
-      recipient: string;
-      body:string;
-    };
-  };
-  // Add other node properties as needed
-}
-
-export interface ModalState {
-  isOpen: boolean;
-  modalType: string | null;
-  currentNodeId: string | null;
-}
 
 export interface NodeState {
   nodesData: Node[];
@@ -115,31 +22,77 @@ export interface NodeState {
   edgesData: any[]; 
 }
 
-//   export type AppNode = {
-//     id: string;
-//     type: 'email' | 'delay' | 'lead' | 'input' | 'output';
-//     position: { x: number; y: number };
-//     data: EmailNodeData | DelayNodeData | LeadSourceNodeData | { label: string };
-//   };
-export type NodeData = {
+export interface SingleLead {
   id: string;
+  lead: string;
+  referrer: string;
+}
+
+// For adding array
+export type NodeData = SingleLead[];  
+
+export interface NodePayload {
+  nodeId?:string;
+  id?: string;
+  position?: { x: number; y: number };
   type?: string;
+  data?: unknown;
+  originalNodeId?:string;
+  hours?: number;
+  minutes?: number;
+    subject?: string;
+    recipient?: string;
+    body?:string;
+}
 
-  time?: {
-    hours: number;
-    minutes: number;
+export interface NodeType {
+  id:string,
+  position?:{
+    x:number,
+    y:number
+  },
+  data?:unknown,
+  type?:string
+}
+
+export type NodeToDelete = NodeData | undefined;
+
+export type nodeToDelete = {
+  id: string;
+  position: {
+      x: number;
+      y: number;
   };
-  label: string;
-  [key: string]: unknown; // Add this to satisfy the constraint
-};
-
-
-
-export interface WaitNodeData {
   type: string;
-  time: {
-    hours: number;
-    minutes: number;
+  data?: unknown
+  style?: unknown
+} 
+
+export interface EdgeType{
+  id:string;
+  source:string;
+  target:string;
+  animated?:boolean;
+  style: { stroke: string; strokeWidth: number }
+  type:string;
+}
+
+  export type EmailNodeData = {
+      recipient: number,
+      subject: number
+    
   };
-  // any other fields...
+  export type EmailFlowNode = Node<EmailNodeData>;
+
+
+export interface EdgeType {
+
+  id: string; 
+
+  source: string;
+
+  target: string;
+
+  animated?: boolean;
+
 }

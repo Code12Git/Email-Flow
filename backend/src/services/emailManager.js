@@ -1,44 +1,24 @@
-const agenda = require("../config/agenda")
+const {fromEnv} = require('../utils')
 
+const nodemailer = require("nodemailer");
 
-const sendEmail = async (body) => {
-    try {
-       if (!body || typeof body !== 'object') {
-        throw new Error('Invalid email data: body must be an object');
-      }
-  
-       const {
-        recipient = '',
-        subject = '',
-        html = '',
-        sendAt = new Date()
-      } = body;
-  
-       if (!recipient) {
-        throw new Error('Recipient email address is required');
-      }
-  
-       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
-        throw new Error('Invalid recipient email format');
-      }
-  
-     
-  
-       await agenda.schedule(
-        sendAt,
-        'send email',
-        {
-          to:recipient,
-          subject: subject || '(No subject)',
-          html: html || '<p></p>' 
-        }
-      );
-  
-      return sendAt;
-    } catch (err) {
-      console.error('Failed to schedule email:', err);
-      throw err; 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: fromEnv('EMAIL_USER'),
+      pass: fromEnv('EMAIL_PASS')
     }
-  };
-  
-  module.exports = { sendEmail };
+  });
+
+async function sendEmail(emailData) {
+     const {subject,recipient,html}= emailData
+   const info = await transporter.sendMail({
+    to: recipient,
+    subject: subject, 
+    html: html
+  });
+
+  console.log("Message sent: %s", info.messageId);
+}
+
+module.exports = {sendEmail}

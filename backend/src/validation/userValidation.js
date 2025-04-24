@@ -1,5 +1,8 @@
 const { z } = require('zod');
 
+
+// User Schema 
+
 const userSchema = z.object({
     id: z.number().int().positive().optional(),
     name: z.string()
@@ -10,7 +13,7 @@ const userSchema = z.object({
     email: z.string().email(),
     role: z.enum(['admin', 'user']).optional(),
     emailQuota: z.number()
-        .min(0, { message: 'Quota should be minimum 0' })
+        .min(10, { message: 'Quota should be minimum 0' })
         .max(8000, { message: 'Quota should be maximum 8000' })
         .default(400),
     isVerified: z.boolean().optional(),
