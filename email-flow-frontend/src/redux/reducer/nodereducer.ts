@@ -1,220 +1,179 @@
-import LeadNode from "../../nodes/CustomLeadNode";
-import {
-  NODE_CREATION_REQUEST,
-  DELETE_NODE,
-  ADD_NODE,
-  DELETE_LEAD_NODE,
-} from "../actionTypes/actionTypes";
-import { NodePayload } from "../../types";
+import { EdgeType,  NodePayload, NodeType } from "../../types/index";
+import { ADD_NODE, DELETE_LEAD_NODE, DELETE_NODE, NODE_CREATION } from "../actionTypes/actionTypes"
 
-const initialState = {
-  nodesData: [
-    {
-      id:"12",
-      position:{x:100,y:-100},
-      type: "customNode",
-    },
-    {
-      id: "1",
-      data: { label: "Sequence Start Point" },
-      position: { x: 100, y: 100 },
-      style: {
-        background: "#10B981",
-        color: "white",
-        border: "2px solid #059669",
-        borderRadius: "8px",
-        padding: "10px 20px",
-        fontSize: "16px",
-        fontWeight: "bold",
-        width: "15%",
-      },
-      type: LeadNode,
-    },
-    {
-      id: "2",
-      data: { label: "+" },
-      position: { x: 100, y: 250 },
-      style: {
-        background: "#3B82F6",
-        color: "white",
-        border: "2px solid #2563EB",
-        borderRadius: "8px",
-        padding: "10px 20px",
-        cursor: "pointer",
-        fontSize: "16px",
-        fontWeight: "bold",
-        width: "15%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      type: "output",
-    },
-  ],
-  edgesData: [
-    {
-      id: "1-2",
-      source: "1",
-      target: "2",
-      labelStyle: {
-        fill: "#1F2937",
-        fontWeight: "bold",
-        fontSize: "12px",
-      },
-      labelBgStyle: {
-        fill: "#E5E7EB",
-        opacity: 0.9,
-        rx: 4,
-        ry: 4,
-      },
-      type: "straight",
-      style: { stroke: "#6B7280", strokeWidth: 2 },
-      markerEnd: { type: "arrowclosed", color: "#6B7280" },
-    },
-  ],
-};
-
-
+const nodeState = {
+nodesData:[
+   {id:'0',position: { x: 550, y: 60 }, type:'AddLeadNode'},
+  { id: '2', position: { x: 600, y: 200 }, data: { label: 'Sequence Start Point' },
+  style: {
+    background: "#10B981",
+    color: "white",
+    border: "2px solid #059669",
+    borderRadius: "8px",
+    padding: "10px 20px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    width: "15%",
+  },
+   },
+  { id: '3', position: { x: 600, y: 300 }, type:'AddNode' },
+],
+edgesData:[{ id: 'e1-1', source: '1', target: '2' },{id:'e2-2',source:'2',target:'3'}]
+}
 
 
 const nodesReducer = (
-  state = initialState,
+  state = nodeState,
   { type, payload }: { type: string; payload: NodePayload }
 ) => {
-  switch (type) {
-    case ADD_NODE: {
-      const newNode = {
-        id: payload.id,
-        type: payload.type,
-        position: payload.position,
-        data: payload.data,
-      };
-    
+  switch(type){
+    case ADD_NODE:{
+      console.log(payload.data)
+      const newNode ={
+        id:'1',position:{x:550,y:60},
+        type:'LeadNode',
+        data:payload.data
+      }
       const newEdge = {
-        id: `${payload.id}-12`,
-        source: payload.id,
-        target: "12",
-        type: "straight",
-        style: { stroke: "#6B7280", strokeWidth: 2 },
-        markerEnd: { type: "arrowclosed", color: "#6B7280" },
+        id:`e-${Date.now()}`,
+        source:'1',
+        target:'2'
+      }
+      return{
+        ...state, nodesData: [...state.nodesData,newNode],edgesData:[...state.edgesData,newEdge]
+      }
+    }
+
+    case NODE_CREATION: {
+      const plusNode = state.nodesData.find((node) => node.id === "3");
+      if (!plusNode) return state;
+      // 1. First create the new node
+      const newNode: NodeType = {
+        id: `n1-${Date.now()}`,
+        position: { 
+          x: plusNode.position.x, 
+          y: plusNode.position.y 
+        },
+        data: payload.data,
+        type: payload.type,
+      
       };
     
+      // 2. Create the connecting edge
+      const newEdge: EdgeType = {
+        id: `e1-${Date.now()}`,
+        source: newNode.id,
+        target: plusNode.id,
+        animated: true, 
+        style: { stroke: "#3B82F6", strokeWidth: 2 },
+        type:'customEdge'
+
+      };
+      const previousEdges = state.edgesData.map((edge) =>
+        edge.target === plusNode.id ? { ...edge, target: newNode.id } : edge
+      );
+      // 3. Update plus node position
+      const updatedPlusNode: NodeType = {
+        ...plusNode,
+        position: {
+          x: plusNode.position.x,
+          y: plusNode.position.y + 120
+        }
+      };
+
       return {
         ...state,
-        nodesData: [...state.nodesData, newNode],
-        edgesData: [...state.edgesData, newEdge],
+        nodesData: [
+          ...state.nodesData.filter(node => node.id !== "3"),
+          newNode,
+          updatedPlusNode
+        ],
+        edgesData: [
+          ...previousEdges,
+          newEdge 
+        ]
       };
     }
-    
 
-      case NODE_CREATION_REQUEST: {
-        const { newNodeData } = payload;
-        const { time, emailData } = newNodeData;
-        const plusNode = state.nodesData.find((node) => node.id === "2");
-        if (!plusNode) return state;
+    case DELETE_NODE: {
+      const nodeIdToDelete = payload.nodeId;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const nodeToDelete:any = state.nodesData.find(node => node.id === nodeIdToDelete);
       
-        const nodeType = newNodeData.type === "delayNode" ? "waitTimeNode" : "emailNode";
+      // Find connected edges
+      const incomingEdge = state.edgesData.find(edge => edge.target === nodeIdToDelete);
+      const outgoingEdge = state.edgesData.find(edge => edge.source === nodeIdToDelete);
       
-       
-        const newNodeId = `node-${Date.now()}`;
-        const newNode = {
-          id: newNodeId,
-          type: nodeType,
-          position: { ...plusNode.position },
-          data: {
-            label:  nodeType,
-            ...(nodeType === "waitTimeNode"
-              ? {
-                nodeId:newNodeId,
-                  time: {
-                    hours: time?.hours || 0,
-                    minutes: time?.minutes || 0,
-                  },
-                }
-              : {
-                nodeId: newNodeId,
-                  emailData: {
-                    subject: emailData?.subject || '',
-                    html: emailData?.body || '',
-                    recipient: emailData?.recipient || ''
-                  }
-                }),
-          },
-     
-        };
-      
-        const updatedPlusNode = {
-          ...plusNode,
-          position: { x: plusNode.position.x, y: plusNode.position.y + 100 },
-        };
-      
-        const previousEdges = state.edgesData.map((edge) =>
-          edge.target === plusNode.id ? { ...edge, target: newNode.id } : edge
-        );
-      
-        const newEdge = {
-          id: `edge-${newNode.id}-plus`,
-          source: newNode.id,
-          target: plusNode.id,
-          type: "customEdge",
-          animated: true,
-          style: { stroke: "#3B82F6", strokeWidth: 2 },
-        };
-      
-        return {
-          ...state,
-          nodesData: [
-            ...state.nodesData.filter((node) => node.id !== "2"),
-            newNode,
-            updatedPlusNode,
-          ],
-          edgesData: [...previousEdges, newEdge],
-        };
+      // Create new edge if bridging is needed
+      const newEdges = [];
+      if (incomingEdge && outgoingEdge) {
+        newEdges.push({
+          id: `edge-${incomingEdge.source}-${outgoingEdge.target}`,
+          source: incomingEdge.source,
+          target: outgoingEdge.target,
+          type: 'customEdge'
+        });
       }
+    
+      const updatedNodes = state.nodesData
+        .filter(node => node.id !== nodeIdToDelete)
+        .map(node => {
+          if (node.position.x > nodeToDelete?.position.x && 
+              node.position.y > nodeToDelete?.position.y) {
+            return {
+              ...node,
+              position: {
+                x: node.position.x - 100, 
+                y: node.position.y - 100    
+              }
+            };
+          }
+          else if (node.position.x > nodeToDelete.position.x) {
+            return {
+              ...node,
+              position: {
+                ...node.position,
+                x: node.position.x - 100  
+              }
+            };
+          }
+          // Move nodes only below (same column)
+          else if (node.position.y > nodeToDelete.position.y) {
+            return {
+              ...node,
+              position: {
+                ...node.position,
+                y: node.position.y - 100  // move up only
+              }
+            };
+          }
+          return node;
+        });
+      
+      return {
+        ...state,
+        nodesData: updatedNodes,
+        edgesData: [
+          ...state.edgesData.filter(
+            edge => edge.source !== nodeIdToDelete && edge.target !== nodeIdToDelete
+          ),
+          ...newEdges
+        ]
+      };
+    }
 
- case DELETE_NODE: {
-  const nodeIdToDelete = payload.id;
-  
-   state.edgesData.filter(
-    edge => edge.source === nodeIdToDelete || edge.target === nodeIdToDelete
-  );
+    case DELETE_LEAD_NODE:{
+      const outgoingEdge = state.edgesData.filter(edge=>edge.source !==  '1')
+      return {
+        ...state,
+        nodesData:state.nodesData.filter(node=>node.id!=='1'),
+        edgeData:[...state.edgesData,outgoingEdge]
+      }
+    }
 
-   const incomingEdge = state.edgesData.find(edge => edge.target === nodeIdToDelete);
-  const outgoingEdge = state.edgesData.find(edge => edge.source === nodeIdToDelete);
-
-   const newEdges = [];
-  if (incomingEdge && outgoingEdge) {
-    newEdges.push({
-      id: `edge-${incomingEdge.source}-${outgoingEdge.target}`,
-      source: incomingEdge.source,
-      target: outgoingEdge.target,
-      type: 'customEdge'
-    });
+    default: return state;
+    
   }
-
-  return {
-    ...state,
-    nodesData: state.nodesData.filter(node => node.id !== nodeIdToDelete),
-    edgesData: [
-       ...state.edgesData.filter(
-        edge => edge.source !== nodeIdToDelete && edge.target !== nodeIdToDelete
-      ),
-       ...newEdges
-    ]
-  };
 }
-
-case DELETE_LEAD_NODE: {
-  const leadNodeId = payload.id || payload; 
-  return {
-    ...state,
-    nodesData: state.nodesData.filter((node) => node.id !== leadNodeId),
-}
-}
-
-    default:
-      return state;
-  }
-};
 
 export default nodesReducer;

@@ -2,9 +2,8 @@ import { legacy_createStore as createStore, applyMiddleware, combineReducers, co
 import {thunk }from 'redux-thunk';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; 
-import modalReducer from './reducer/modalreducer';
 import nodesReducer from './reducer/nodereducer';
-import { ModalState, NodeState } from '../types';
+import { NodeState } from '../types';
 
  const persistConfig = {
   key: 'root',
@@ -12,7 +11,6 @@ import { ModalState, NodeState } from '../types';
 };
 
  const rootReducer = combineReducers({
-  modal: modalReducer as Reducer<ModalState>,
   nodes: nodesReducer as unknown as Reducer<NodeState>
 });
 

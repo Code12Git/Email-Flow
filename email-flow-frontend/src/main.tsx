@@ -4,7 +4,7 @@ import App from './App.tsx'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { store } from './redux/store.ts'
-import { ReactFlowProvider } from 'reactflow'
+import { ReactFlowProvider } from '@xyflow/react'
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>

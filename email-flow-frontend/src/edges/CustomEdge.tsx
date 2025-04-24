@@ -4,26 +4,12 @@ import {
   getStraightPath,
   EdgeProps,
 } from '@xyflow/react';
-import { useDispatch } from 'react-redux';
-import { OPEN_MODAL } from '../redux/actionTypes/actionTypes';
-import DelayTaskModal from '../ui/modal/DelayTaskModal';
+
 import { useState } from 'react';
+import EmailTimeModal from '../ui/modal/EmailTimeModal';
 
-interface CustomEdgeData {
-  id: string;
-  source: string;
-  target: string;
-  [key: string]: unknown;
-}
 
-interface ModalPayload {
-  modalType: string;
-  nodeId: string;
-  position: {
-    x: number;
-    y: number;
-  };
-}
+
 
 export default function CustomEdge({
   id,
@@ -31,16 +17,13 @@ export default function CustomEdge({
   sourceY,
   targetX,
   targetY,
-  source,
   markerEnd,
   markerStart,
   style,
   interactionWidth,
-}: EdgeProps<CustomEdgeData>) {
-  const dispatch = useDispatch();
+}: EdgeProps) {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // Corrected getStraightPath call - only includes the required parameters
   const [edgePath, labelX, labelY] = getStraightPath({
     sourceX,
     sourceY,
@@ -50,14 +33,6 @@ export default function CustomEdge({
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
-    dispatch({
-      type: OPEN_MODAL,
-      payload: {
-        modalType: 'delay-task',
-        nodeId: source,
-        position: { x: labelX, y: labelY },
-      } as ModalPayload,
-    });
   };
 
   return (
@@ -93,10 +68,9 @@ export default function CustomEdge({
         >
           +
         </button>
-        <DelayTaskModal 
-          isModalOpen={isModalOpen} 
-          setIsModalOpen={setIsModalOpen}
-          edge={true}
+        <EmailTimeModal
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
         />
       </EdgeLabelRenderer>
     </>

@@ -1,79 +1,39 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ADD_NODE, DELETE_NODE, NODE_CREATION_REQUEST, UPDATE_NODE } from "../actionTypes/actionTypes";
-import { v4 as uuidv4 } from 'uuid';
-interface NodeData {
-  leads?: Array<{
-    id: string;
-    name: string;
-    email: string;
-    company: string;
-    status: string;
-  }>;
-  label?: string;
-  emailData?:any;
-  type?: string;
-  time?: {
-    hours: number;
-    minutes: number;
-  };
-  loading?: boolean;
-  error?: string;
-}
+import { ADD_NODE, DELETE_LEAD_NODE, DELETE_NODE, NODE_CREATION} from "../actionTypes/actionTypes";
+import { AppDispatch } from "../store";
+import { NodeData, NodePayload } from "../../types";
 
-interface NodePosition {
-  x: number;
-  y: number;
-}
 
-interface Node {
-  id: string;
-  type: string;
-  position: NodePosition;
-  data: NodeData;
-}
-
-interface NodeUpdate extends Partial<Node> {
-  id: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const addNode = (nodeData: NodeData, type: string, position: NodePosition,edge =null) => (dispatch: any) => {
-  if (!position || typeof position.x !== 'number' || typeof position.y !== 'number') {
-    console.error('Invalid position provided:', position);
-    position = { x: 0, y: 0 }; // Default position if invalid
-  }
+export const addLeadNode = (nodeData:NodeData) => (dispatch:AppDispatch) => {
+  console.log(nodeData)
+  
   dispatch({
-    type: ADD_NODE,
-    payload: {
-      id: uuidv4(),
-      position: position,
-      type: type,
-      data: nodeData ,
-      edge
-    }
-  });
-};
+      type:ADD_NODE,
+      payload:{
+          data:nodeData
+      }
+  })
+}
 
-export const updateNodePosition = (nodeUpdate: NodeUpdate) => (dispatch: any) => {
-  dispatch({
-    type: UPDATE_NODE,
-    payload: nodeUpdate
-  });
-};
 
-export const deleteNode = (nodeId: string) => (dispatch: any) => {
+export const deleteNode = (nodeId: string) => (dispatch: AppDispatch) => {
   dispatch({
     type: DELETE_NODE,
-    payload: { id: nodeId }
+    payload: { nodeId: nodeId }
   });
 };
 
-export const nodeCreationRequest = (originalNodeId: string, newNodeData: NodeData) => (dispatch: any) => {
+export const deleteLeadNode = () => (dispatch: AppDispatch) => {
   dispatch({
-    type: NODE_CREATION_REQUEST,
-    payload: { 
-      originalNodeId: originalNodeId, 
-      newNodeData: newNodeData 
-    }
+    type: DELETE_LEAD_NODE,
   });
 };
+
+export const nodeCreation = (emailData:NodePayload,type:string) => (dispatch:AppDispatch) => {
+  dispatch({
+      type:NODE_CREATION,
+      payload:{
+          data:emailData,
+          type:type
+      }
+  })
+}
