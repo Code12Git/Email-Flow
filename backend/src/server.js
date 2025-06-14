@@ -8,12 +8,13 @@ const agenda = require('./config/agenda');
 const job  = require('./config/agenda')
 const app = express();
 const PORT = fromEnv('PORT') || 3002;
-
+const scheduling = require('./config/agenda')
 connectDB();
 
 // Middleware
 app.use(express.json());
 app.use(cors());
+scheduling.start()
 
 app.use('/api', routes); 
 
